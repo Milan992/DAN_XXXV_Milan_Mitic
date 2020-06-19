@@ -49,7 +49,7 @@ namespace GuessNumber
 
             if (number < 1)
             {
-                while (!int.TryParse(numberToGuess, out number) && number < 1)
+                while (!int.TryParse(numberToGuess, out number) && number < 1 || number > 100)
                 {
                     Console.WriteLine("\nPlease enter a number to guess. The number must be 1 - 100.");
                     numberToGuess = Console.ReadLine();
@@ -58,7 +58,7 @@ namespace GuessNumber
 
             Console.WriteLine("\nYou have entered the number of participanst. Number of participants is: {0}", participantsInt);
             Console.WriteLine("\n The number to guess is: {0}", number);
-           
+
             return Convert.ToInt32(participantsInt);
         }
 
