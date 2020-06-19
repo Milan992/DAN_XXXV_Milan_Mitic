@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,22 +8,26 @@ namespace GuessNumber
     {
         static uint numberOfParticipants;
         static int number;
+        static readonly object l = new object();
 
         static void Main(string[] args)
         {
             Thread begin = new Thread(() => InsertParticipantAmount());
-            
+            begin.Start();
+
             Thread[] threadArray = GenerateThreads(Convert.ToInt32(numberOfParticipants));
 
             for (int i = 0; i < threadArray.Length; i++)
             {
                 threadArray[i].Start();
             }
+              Console.ReadLine();
         }
 
         private static int InsertParticipantAmount()
         {
             string participants = "";
+            string numberToGuess = "";
 
             while (!uint.TryParse(participants, out numberOfParticipants))
             {
@@ -34,9 +35,7 @@ namespace GuessNumber
                 participants = Console.ReadLine();
             }
 
-            string numberToGuess = "";
-
-            while (!int.TryParse(numberToGuess, out number) && number > 100 && number < 1)
+            while (!int.TryParse(numberToGuess, out number))
             {
                 Console.WriteLine("\nPlease enter a number to guess. The number muust be 1 - 100.");
                 numberToGuess = Console.ReadLine();
@@ -65,7 +64,24 @@ namespace GuessNumber
 
         private static void GuessNumber(int numberToGuess)
         {
-            throw new NotImplementedException();
+            Thread.Sleep(100);
+            Random r = new Random();
+            int guess = r.Next(1, 101);
+
+            lock (l)
+            {
+                Console.WriteLine("{0} tried to guess with number: {1}", Thread.CurrentThread.Name, guess);
+                if (guess % 2 == numberToGuess % 2)
+                {
+                    Console.WriteLine("{0} guessed the number's parity", Thread.CurrentThread.Name);
+                }
+                else if (guess == numberToGuess)
+                {
+                    Console.WriteLine("Thread_{0} won, number to guess was {1}", Thread.CurrentThread.Name.Substring(11, 11), numberToGuess);
+                    //  System.Diagnostics.Process.GetCurrentProcess().Kill();
+                }
+            }
+
         }
     }
 }
