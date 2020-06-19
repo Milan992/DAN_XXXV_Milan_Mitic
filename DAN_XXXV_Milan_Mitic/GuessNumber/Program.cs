@@ -1,4 +1,4 @@
-﻿using System;;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,7 +6,7 @@ namespace GuessNumber
 {
     class Program
     {
-        static uint numberOfParticipants;
+        static int numberOfParticipants;
         static int number;
         static readonly object l = new object();
 
@@ -15,38 +15,40 @@ namespace GuessNumber
             Thread begin = new Thread(() => InsertParticipantAmount());
             begin.Start();
 
-            Thread[] threadArray = GenerateThreads(Convert.ToInt32(numberOfParticipants));
+            numberOfParticipants = InsertParticipantAmount();
+
+            Task<Thread[]> Thread_Generator = new Task<Thread[]>(() => GenerateThreads(numberOfParticipants));
+            Thread_Generator.Start();
+
+            Thread[] threadArray = GenerateThreads(numberOfParticipants);
 
             for (int i = 0; i < threadArray.Length; i++)
             {
                 threadArray[i].Start();
             }
-              Console.ReadLine();
+            Console.ReadLine();
         }
 
         private static int InsertParticipantAmount()
         {
             string participants = "";
-            string numberToGuess = "";
+            int guess;
 
-            while (!uint.TryParse(participants, out numberOfParticipants))
+            while (!int.TryParse(participants, out guess))
             {
                 Console.WriteLine("\nPlease enter the number of participants:");
                 participants = Console.ReadLine();
             }
 
+            string numberToGuess = "";
             while (!int.TryParse(numberToGuess, out number))
             {
                 Console.WriteLine("\nPlease enter a number to guess. The number muust be 1 - 100.");
                 numberToGuess = Console.ReadLine();
             }
-
-            Task<Thread[]> Thread_Generator = new Task<Thread[]>(() => GenerateThreads(Convert.ToInt32(numberOfParticipants)));
-            Thread_Generator.Start();
-
             Console.WriteLine("\nYou have entered the number of participanst. Number of participanst is: {0}", numberOfParticipants);
             Console.WriteLine("\n The number to guess is: {0}", number);
-            return Convert.ToInt32(numberOfParticipants);
+            return guess;
         }
 
         private static Thread[] GenerateThreads(int numberOfThreads)
@@ -70,15 +72,14 @@ namespace GuessNumber
 
             lock (l)
             {
-                Console.WriteLine("{0} tried to guess with number: {1}", Thread.CurrentThread.Name, guess);
+                Console.WriteLine("\n{0} tried to guess with number: {1}", Thread.CurrentThread.Name, guess);
                 if (guess % 2 == numberToGuess % 2)
                 {
                     Console.WriteLine("{0} guessed the number's parity", Thread.CurrentThread.Name);
                 }
-                else if (guess == numberToGuess)
+                if (guess == numberToGuess)
                 {
-                    Console.WriteLine("Thread_{0} won, number to guess was {1}", Thread.CurrentThread.Name.Substring(11, 11), numberToGuess);
-                    //  System.Diagnostics.Process.GetCurrentProcess().Kill();
+                    Console.WriteLine("\t\t\tThread_{0} won, number to guess was {1}", Thread.CurrentThread.Name, numberToGuess);
                 }
             }
 
