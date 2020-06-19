@@ -37,9 +37,9 @@ namespace GuessNumber
         private static int InsertParticipantAmount()
         {
             string participants = "";
-            int participantsInt;
+            uint participantsInt;
 
-            while (!int.TryParse(participants, out participantsInt) && participantsInt < 1)
+            while (!uint.TryParse(participants, out participantsInt) && participantsInt < 1)
             {
                 Console.WriteLine("\nPlease enter the number of participants:");
                 participants = Console.ReadLine();
@@ -58,7 +58,8 @@ namespace GuessNumber
 
             Console.WriteLine("\nYou have entered the number of participanst. Number of participants is: {0}", participantsInt);
             Console.WriteLine("\n The number to guess is: {0}", number);
-            return participantsInt;
+           
+            return Convert.ToInt32(participantsInt);
         }
 
         /// <summary>
