@@ -14,6 +14,7 @@ namespace GuessNumber
         {
             Thread begin = new Thread(() => InsertParticipantAmount());
             begin.Start();
+            begin.Join();
 
             numberOfParticipants = InsertParticipantAmount();
 
@@ -46,11 +47,15 @@ namespace GuessNumber
 
             string numberToGuess = "";
 
-            while (!int.TryParse(numberToGuess, out number) && number < 1)
+            if (number < 1)
             {
-                Console.WriteLine("\nPlease enter a number to guess. The number must be 1 - 100.");
-                numberToGuess = Console.ReadLine();
+                while (!int.TryParse(numberToGuess, out number) && number < 1)
+                {
+                    Console.WriteLine("\nPlease enter a number to guess. The number must be 1 - 100.");
+                    numberToGuess = Console.ReadLine();
+                }
             }
+
             Console.WriteLine("\nYou have entered the number of participanst. Number of participants is: {0}", participantsInt);
             Console.WriteLine("\n The number to guess is: {0}", number);
             return participantsInt;
@@ -89,7 +94,6 @@ namespace GuessNumber
                 Console.WriteLine("\n{0} tried to guess with number: {1}", Thread.CurrentThread.Name, guess);
                 if (guess % 2 == numberToGuess % 2)
                 {
-                    Console.WriteLine("{0} guessed the number's parity", Thread.CurrentThread.Name);
                     Console.WriteLine("{0} guessed the number's parity", Thread.CurrentThread.Name);
                 }
                 if (guess == numberToGuess)
