@@ -7,7 +7,7 @@ namespace GuessNumber
     class Program
     {
         static int numberOfParticipants;
-        static int number;
+        static int number = 0;
         static readonly object l = new object();
 
         static void Main(string[] args)
@@ -29,28 +29,38 @@ namespace GuessNumber
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// asks to insert number of participants and a nubmer to guess.
+        /// </summary>
+        /// <returns>number of participants which is equals to number of threads</returns>
         private static int InsertParticipantAmount()
         {
             string participants = "";
-            int guess;
+            int participantsInt;
 
-            while (!int.TryParse(participants, out guess))
+            while (!int.TryParse(participants, out participantsInt) && participantsInt < 1)
             {
                 Console.WriteLine("\nPlease enter the number of participants:");
                 participants = Console.ReadLine();
             }
 
             string numberToGuess = "";
-            while (!int.TryParse(numberToGuess, out number))
+
+            while (!int.TryParse(numberToGuess, out number) && number < 1)
             {
-                Console.WriteLine("\nPlease enter a number to guess. The number muust be 1 - 100.");
+                Console.WriteLine("\nPlease enter a number to guess. The number must be 1 - 100.");
                 numberToGuess = Console.ReadLine();
             }
-            Console.WriteLine("\nYou have entered the number of participanst. Number of participanst is: {0}", numberOfParticipants);
+            Console.WriteLine("\nYou have entered the number of participanst. Number of participants is: {0}", participantsInt);
             Console.WriteLine("\n The number to guess is: {0}", number);
-            return guess;
+            return participantsInt;
         }
 
+        /// <summary>
+        /// generates an array of threads.
+        /// </summary>
+        /// <param name="numberOfThreads"></param>
+        /// <returns></returns>
         private static Thread[] GenerateThreads(int numberOfThreads)
         {
             Thread[] threadArray = new Thread[numberOfThreads];
@@ -64,6 +74,10 @@ namespace GuessNumber
             return threadArray;
         }
 
+        /// <summary>
+        /// generates a random number and compares it to the parameter.
+        /// </summary>
+        /// <param name="numberToGuess"></param>
         private static void GuessNumber(int numberToGuess)
         {
             Thread.Sleep(100);
@@ -76,13 +90,14 @@ namespace GuessNumber
                 if (guess % 2 == numberToGuess % 2)
                 {
                     Console.WriteLine("{0} guessed the number's parity", Thread.CurrentThread.Name);
+                    Console.WriteLine("{0} guessed the number's parity", Thread.CurrentThread.Name);
                 }
                 if (guess == numberToGuess)
                 {
-                    Console.WriteLine("\t\t\tThread_{0} won, number to guess was {1}", Thread.CurrentThread.Name, numberToGuess);
+                    Console.WriteLine("\n\t\t\tThread_{0} won, number to guess was {1}", Thread.CurrentThread.Name, numberToGuess);
+                    Console.ReadLine();
                 }
             }
-
         }
     }
 }
